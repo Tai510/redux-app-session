@@ -1,40 +1,22 @@
-import React, { useState, useEffect } from "react";
-import ReactDOM from "react-dom";
-import axios from "axios";
-import { DarkMode } from '../src/Hooks/DarkMode'
-
-import Charts from "./components/Charts";
-import Navbar from "./components/Navbar";
-
-import "./styles.scss";
-
-const App = () => {
-  const [coinData, setCoinData] = useState([]);
-
-  useEffect(() => {
-    axios
-      .get(
-        "https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=10&page=1&sparkline=true"
-      )
-      .then(res => setCoinData(res.data))
-      .catch(err => console.log(err));
-  }, []);
+import React from 'react';
+import ReactDOM from 'react-dom';
+import './index.css';
+import App from './App';
+import { createStore } from 'redux';
+import { Provider } from 'react-redux';
+import allReducers from './reducers'
 
 
-  const [mode, toggleMode] = DarkMode('dark-mode', false)
+const store = createStore(allReducers)
 
 
-  return (
-    <div className={`App ${(mode === true ? 'dark-mode' : '')}`}>
-      <Navbar
-        toggleMode={toggleMode}
-        darkMode={mode}
-      />
-      <Charts coinData={coinData} />
-    </div>
-  );
-};
+ReactDOM.render(
+<Provider store={store}>
+    <App />
+</Provider>, 
+document.getElementById('root'));
 
+// If you want your app to work offline and load faster, you can change
+// unregister() to register() below. Note this comes with some pitfalls.
+// Learn more about service workers: https://bit.ly/CRA-PWA
 
-const rootElement = document.getElementById("root");
-ReactDOM.render(<App />, rootElement);
